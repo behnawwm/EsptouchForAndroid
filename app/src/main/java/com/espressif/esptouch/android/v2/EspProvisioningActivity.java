@@ -1,5 +1,7 @@
 package com.espressif.esptouch.android.v2;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.espressif.esptouch.android.EspTouchApp;
 import com.espressif.esptouch.android.R;
 import com.espressif.esptouch.android.databinding.ActivityProvisionBinding;
+import com.espressif.esptouch.android.main.UDP;
+import com.espressif.esptouch.android.main.UDPSocket;
 import com.espressif.iot.esptouch2.provision.EspProvisioner;
 import com.espressif.iot.esptouch2.provision.EspProvisioningListener;
 import com.espressif.iot.esptouch2.provision.EspProvisioningRequest;
@@ -33,9 +38,11 @@ import java.util.List;
 public class EspProvisioningActivity extends AppCompatActivity {
     private static final String TAG = EspProvisioningActivity.class.getSimpleName();
 
+    //
+    private UDPSocket udpSocket;
     public static final String KEY_PROVISION = "provision";
     public static final String KEY_PROVISION_REQUEST = "provision_request";
-
+    //
     private List<EspProvisioningResult> mStations;
     private StationAdapter mStationAdapter;
 
@@ -50,6 +57,7 @@ public class EspProvisioningActivity extends AppCompatActivity {
     private boolean mWifiFailed = false;
 
     private long mTime;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -172,6 +180,16 @@ public class EspProvisioningActivity extends AppCompatActivity {
                 mStations.add(result);
                 mStationAdapter.notifyItemInserted(mStations.size() - 1);
             });
+            //
+            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+            String username = sharedPref.getString("username", "tessst");
+            String password = sharedPref.getString("password", "tessst");
+
+            UDP udp = new UDP(host, 888, 3000);
+            udp.send("?" + username + "?" + password + "?" + "Behnam");
+            Toast.makeText(getBaseContext(), "Sending UDP to: " + host + ":888", Toast.LENGTH_LONG).show();
+            //
         }
 
         @Override
@@ -198,5 +216,23 @@ public class EspProvisioningActivity extends AppCompatActivity {
                 mBinding.messageView.setText(message);
             });
         }
+
     }
+
+//    private void setupChat(String ip) {
+//        udpSocket = new UDPSocket(mHandler, 1985);
+//        udpSocket.startRecv();         // 开始监听
+//        // 界面初始化
+//        String address = "192.168.137.1:80";
+//        mSendButton = (Button) findViewById(R.id.button_send);
+//        mSendButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String message = mOutEditText.getText().toString();
+//                String[] addr = mServerAddress.getText().toString().split(":");
+//                udpSocket.Send(message, addr[0], Integer.parseInt(addr[1]));
+//            }
+//        });
+//    }
+
 }

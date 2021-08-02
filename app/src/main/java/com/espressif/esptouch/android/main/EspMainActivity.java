@@ -1,10 +1,13 @@
 package com.espressif.esptouch.android.main;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +35,8 @@ public class EspMainActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, OrientationHelper.VERTICAL));
         recyclerView.setAdapter(new ItemAdapter());
+
+        //
     }
 
     private class ItemHolder extends RecyclerView.ViewHolder {

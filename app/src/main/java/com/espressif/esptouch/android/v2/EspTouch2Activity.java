@@ -28,6 +28,9 @@ import java.net.InetAddress;
 public class EspTouch2Activity extends EspTouchActivityAbs {
     private static final String TAG = EspTouch2Activity.class.getSimpleName();
 
+    public static final int MESSAGE_READ = 1;
+    public static final int MESSAGE_WRITE = 2;
+
     private static final int REQUEST_PERMISSION = 0x01;
     private static final int REQUEST_PROVISIONING = 0x02;
 
